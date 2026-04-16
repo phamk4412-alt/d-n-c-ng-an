@@ -36,14 +36,23 @@ const ReportExport = ({ cases }: { cases: CrimeCase[] }) => {
 
   return (
     <div className="section-card">
-      <h2>Xuất báo cáo</h2>
+      <div className="table-title-bar">
+        <div>
+          <h2>Xuất báo cáo</h2>
+          <p style={{ margin: '10px 0 0', color: '#475569', maxWidth: 620 }}>
+            Tạo báo cáo nhanh dạng PDF hoặc Excel để nộp cáo cáo nội bộ, đánh giá định kỳ và giám sát tội phạm.
+          </p>
+        </div>
+        <div className="summary-pill">{cases.length} vụ đang chọn</div>
+      </div>
+
       <div className="report-actions">
         <button onClick={exportPDF}>Xuất PDF</button>
         <button onClick={exportExcel}>Xuất Excel</button>
       </div>
-      <div style={{ padding: 18, background: '#f8fafc', borderRadius: 18 }}>
-        <p><strong>Số vụ đang hiển thị:</strong> {cases.length}</p>
-        <p>Hệ thống cho phép xuất báo cáo theo tháng / năm dựa vào dữ liệu hiện tại.</p>
+
+      <div style={{ padding: 24, borderRadius: 20, background: '#f1f5f9', border: '1px solid rgba(148, 163, 184, 0.18)' }}>
+        <p style={{ margin: 0, color: '#334155' }}><strong>Chức năng:</strong> xuất báo cáo theo tháng / năm, xuất dữ liệu vụ việc ra file để lưu trữ và phân tích.</p>
       </div>
     </div>
   );
