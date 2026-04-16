@@ -44,13 +44,11 @@ const MapViewSwitcher = ({ center, zoom }: { center: [number, number]; zoom: num
   return null;
 };
 
+const vietnamBounds: [[number, number], [number, number]] = [[0.5, 102.0], [24.5, 117.5]];
+
 const CrimeMap = ({ cases }: { cases: CrimeCase[] }) => {
-  const [showIslands, setShowIslands] = useState(false);
-  const center = useMemo<[number, number]>(
-    () => (showIslands ? [12.5, 113.0] : [10.7767, 106.7009]),
-    [showIslands]
-  );
-  const zoom = showIslands ? 5 : 11;
+  const center: [number, number] = [14.0, 108.6];
+  const zoom = 5;
 
   return (
     <div className="section-card map-card">
@@ -58,43 +56,34 @@ const CrimeMap = ({ cases }: { cases: CrimeCase[] }) => {
         <div>
           <h2>Hiển thị dữ liệu trên bản đồ</h2>
           <p style={{ margin: '10px 0 0', color: '#475569', maxWidth: 560 }}>
-            Xem vị trí vụ việc, phân tích khu vực nguy cơ cao và tra cứu thông tin nhanh trên bản đồ TP.HCM. Bản đồ cũng có thể hiển thị Hoàng Sa và Trường Sa theo quan điểm Việt Nam.
+            Bản đồ giới hạn chỉ trong phạm vi Việt Nam, gồm đất liền và quần đảo Hoàng Sa - Trường Sa theo quan điểm Việt Nam.
           </p>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          <button
-            onClick={() => setShowIslands(!showIslands)}
-            style={{
-              border: 'none',
-              borderRadius: 14,
-              padding: '12px 16px',
-              background: '#1d4ed8',
-              color: 'white',
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
-          >
-            {showIslands ? 'Quay lại TP.HCM' : 'Hiển thị HS-TS'}
-          </button>
-          <div className="map-legend">
-            <div className="legend-item">
-              <span className="legend-dot" style={{ background: '#ef4444' }} /> Trộm cắp
-            </div>
-            <div className="legend-item">
-              <span className="legend-dot" style={{ background: '#f59e0b' }} /> Cướp giật
-            </div>
-            <div className="legend-item">
-              <span className="legend-dot" style={{ background: '#3b82f6' }} /> Gây rối trật tự
-            </div>
-            <div className="legend-item">
-              <span className="legend-dot" style={{ background: '#10b981' }} /> Ma túy
-            </div>
+        <div className="map-legend">
+          <div className="legend-item">
+            <span className="legend-dot" style={{ background: '#ef4444' }} /> Trộm cắp
+          </div>
+          <div className="legend-item">
+            <span className="legend-dot" style={{ background: '#f59e0b' }} /> Cướp giật
+          </div>
+          <div className="legend-item">
+            <span className="legend-dot" style={{ background: '#3b82f6' }} /> Gây rối trật tự
+          </div>
+          <div className="legend-item">
+            <span className="legend-dot" style={{ background: '#10b981' }} /> Ma túy
           </div>
         </div>
       </div>
 
-      <MapContainer center={center} zoom={zoom} style={{ width: '100%', minHeight: '520px', borderRadius: 20, overflow: 'hidden' }}>
-        <MapViewSwitcher center={center} zoom={zoom} />
+      <MapContainer
+        center={center}
+        zoom={zoom}
+        maxBounds={vietnamBounds}
+        maxBoundsViscosity={0.95}
+        minZoom={5}
+        maxZoom={11}
+        style={{ width: '100%', minHeight: '520px', borderRadius: 20, overflow: 'hidden' }}
+      >
         <TileLayer
           attribution='&copy; OpenStreetMap, &copy; CARTO'
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
@@ -121,7 +110,7 @@ const CrimeMap = ({ cases }: { cases: CrimeCase[] }) => {
           />
         ))}
 
-        {showIslands && islandMarkers.map((island) => (
+        {islandMarkers.map((island) => (
           <Marker position={[island.lat, island.lng]} icon={markerIcon} key={island.id}>
             <Popup>
               <strong>{island.name}</strong>
@@ -131,7 +120,7 @@ const CrimeMap = ({ cases }: { cases: CrimeCase[] }) => {
           </Marker>
         ))}
 
-        {showIslands && islandMarkers.map((island) => (
+        {islandMarkers.map((island) => (
           <CircleMarker
             key={`${island.id}-label`}
             center={[island.lat, island.lng]}
