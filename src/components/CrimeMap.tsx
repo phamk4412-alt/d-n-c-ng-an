@@ -56,7 +56,7 @@ const tileProviders = {
 const vietnamBounds: [[number, number], [number, number]] = [[0.5, 102.0], [24.5, 117.5]];
 
 const CrimeMap = ({ cases }: { cases: CrimeCase[] }) => {
-  const [provider, setProvider] = useState<'fpt' | 'carto'>('fpt');
+  const [provider, setProvider] = useState<'fpt' | 'carto'>('carto');
   const [showIslands, setShowIslands] = useState(false);
   const center: [number, number] = showIslands ? [12.5, 113.0] : [10.7767, 106.7009];
   const zoom = showIslands ? 5 : 11;
@@ -68,6 +68,8 @@ const CrimeMap = ({ cases }: { cases: CrimeCase[] }) => {
           <h2>Hiển thị dữ liệu trên bản đồ</h2>
           <p style={{ margin: '10px 0 0', color: '#475569', maxWidth: 560 }}>
             Bản đồ giới hạn chỉ trong phạm vi Việt Nam, gồm đất liền và quần đảo Hoàng Sa - Trường Sa theo quan điểm Việt Nam.
+            <br />
+            Nếu FPT Map không hiển thị, chọn Carto Voyager để xem bản đồ ngay.
           </p>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
