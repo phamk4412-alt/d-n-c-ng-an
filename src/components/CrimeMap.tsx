@@ -39,11 +39,11 @@ const islandMarkers = [
 ];
 
 const tileProviders = {
-  fpt: {
-    name: 'FPT Map',
-    url: 'https://tiles.fpt.vn/{z}/{x}/{y}.png',
-    attribution: '&copy; FPT Map',
-    subdomains: undefined,
+  osm: {
+    name: 'OpenStreetMap',
+    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attribution: '&copy; OpenStreetMap contributors',
+    subdomains: 'abc',
   },
   carto: {
     name: 'Carto Voyager',
@@ -51,12 +51,18 @@ const tileProviders = {
     attribution: '&copy; OpenStreetMap, &copy; CARTO',
     subdomains: 'abcd',
   },
+  fpt: {
+    name: 'FPT Map',
+    url: 'https://tiles.fpt.vn/{z}/{x}/{y}.png',
+    attribution: '&copy; FPT Map',
+    subdomains: undefined,
+  },
 };
 
 const vietnamBounds: [[number, number], [number, number]] = [[0.5, 102.0], [24.5, 117.5]];
 
 const CrimeMap = ({ cases }: { cases: CrimeCase[] }) => {
-  const [provider, setProvider] = useState<'fpt' | 'carto'>('carto');
+  const [provider, setProvider] = useState<'osm' | 'carto' | 'fpt'>('osm');
   const [showIslands, setShowIslands] = useState(false);
   const center: [number, number] = showIslands ? [12.5, 113.0] : [10.7767, 106.7009];
   const zoom = showIslands ? 5 : 11;
@@ -89,7 +95,7 @@ const CrimeMap = ({ cases }: { cases: CrimeCase[] }) => {
           </button>
           <select
             value={provider}
-            onChange={(event) => setProvider(event.target.value as 'fpt' | 'carto')}
+            onChange={(event) => setProvider(event.target.value as 'osm' | 'carto' | 'fpt')}
             style={{
               borderRadius: 14,
               padding: '12px 14px',
@@ -98,8 +104,9 @@ const CrimeMap = ({ cases }: { cases: CrimeCase[] }) => {
               color: '#0f172a',
             }}
           >
-            <option value="fpt">FPT Map</option>
+            <option value="osm">OpenStreetMap</option>
             <option value="carto">Carto Voyager</option>
+            <option value="fpt">FPT Map</option>
           </select>
           <div className="map-legend">
             <div className="legend-item">
