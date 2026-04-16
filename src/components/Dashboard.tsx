@@ -32,18 +32,23 @@ const Dashboard = ({ cases }: { cases: CrimeCase[] }) => {
   return (
     <div className="section-card">
       <h2>Dashboard phân tích</h2>
-      <div className="grid-2">
-        <div className="section-card" style={{ padding: 18 }}>
-          <h3>Tổng số vụ việc</h3>
-          <div style={{ fontSize: '3rem', fontWeight: 700, color: '#1d4ed8', marginTop: 14 }}>{totalCases}</div>
+
+      <div className="card-row">
+        <div className="metric-card">
+          <h4>Tổng số vụ việc</h4>
+          <p>{totalCases}</p>
         </div>
-        <div className="section-card" style={{ padding: 18 }}>
-          <h3>Top khu vực có nhiều vụ việc</h3>
-          <ul>
-            {popularDistricts.map((item) => (
-              <li key={item.name}>{item.name}: {item.value} vụ</li>
-            ))}
-          </ul>
+        <div className="metric-card">
+          <h4>Khu vực nhiều nhất</h4>
+          <p>{popularDistricts[0]?.name || 'N/A'}</p>
+        </div>
+        <div className="metric-card">
+          <h4>Loại phổ biến</h4>
+          <p>{crimeTypeCount[0]?.name || 'N/A'}</p>
+        </div>
+        <div className="metric-card">
+          <h4>Thời gian phân tích</h4>
+          <p>2024 - 2025</p>
         </div>
       </div>
 
@@ -97,9 +102,10 @@ const Dashboard = ({ cases }: { cases: CrimeCase[] }) => {
         <h3>Heatmap khu vực tội phạm</h3>
         <div className="grid-2">
           {districtHeat.map((item) => (
-            <div key={item.name} style={{ padding: 14, borderRadius: 14, background: '#f8fafc' }}>
+            <div key={item.name} className="metric-card" style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 8 }}>
               <strong>{item.name}</strong>
-              <p style={{ margin: '10px 0 0', color: item.color }}>{item.value > 1 ? 'Cao' : 'Trung bình'}</p>
+              <span style={{ color: item.color }}>{item.value > 1 ? 'Cao' : 'Trung bình'}</span>
+              <span>{item.value} vụ</span>
             </div>
           ))}
         </div>
