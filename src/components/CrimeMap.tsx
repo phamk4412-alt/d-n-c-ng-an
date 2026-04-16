@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { MapContainer, Marker, Popup, TileLayer, CircleMarker, useMap } from 'react-leaflet';
+import { useState } from 'react';
+import { MapContainer, Marker, Popup, TileLayer, CircleMarker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { CrimeCase } from '../data/mockData';
 import { Icon } from 'leaflet';
@@ -38,17 +38,28 @@ const islandMarkers = [
   },
 ];
 
-const MapViewSwitcher = ({ center, zoom }: { center: [number, number]; zoom: number }) => {
-  const map = useMap();
-  map.setView(center, zoom, { animate: true });
-  return null;
+const tileProviders = {
+  fpt: {
+    name: 'FPT Map',
+    url: 'https://tiles.fpt.vn/{z}/{x}/{y}.png',
+    attribution: '&copy; FPT Map',
+    subdomains: undefined,
+  },
+  carto: {
+    name: 'Carto Voyager',
+    url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+    attribution: '&copy; OpenStreetMap, &copy; CARTO',
+    subdomains: 'abcd',
+  },
 };
 
 const vietnamBounds: [[number, number], [number, number]] = [[0.5, 102.0], [24.5, 117.5]];
 
 const CrimeMap = ({ cases }: { cases: CrimeCase[] }) => {
-  const center: [number, number] = [14.0, 108.6];
-  const zoom = 5;
+  const [provider, setProvider] = useState<'fpt' | 'carto'>('fpt');
+  const [showIslands, setShowIslands] = useState(false);
+  const center: [number, number] = showIslands ? [12.5, 113.0] : [10.7767, 106.7009];
+  const zoom = showIslands ? 5 : 11;
 
   return (
     <div className="section-card map-card">
@@ -59,18 +70,48 @@ const CrimeMap = ({ cases }: { cases: CrimeCase[] }) => {
             Bản đồ giới hạn chỉ trong phạm vi Việt Nam, gồm đất liền và quần đảo Hoàng Sa - Trường Sa theo quan điểm Việt Nam.
           </p>
         </div>
-        <div className="map-legend">
-          <div className="legend-item">
-            <span className="legend-dot" style={{ background: '#ef4444' }} /> Trộm cắp
-          </div>
-          <div className="legend-item">
-            <span className="legend-dot" style={{ background: '#f59e0b' }} /> Cướp giật
-          </div>
-          <div className="legend-item">
-            <span className="legend-dot" style={{ background: '#3b82f6' }} /> Gây rối trật tự
-          </div>
-          <div className="legend-item">
-            <span className="legend-dot" style={{ background: '#10b981' }} /> Ma túy
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <button
+            onClick={() => setShowIslands(!showIslands)}
+            style={{
+              border: 'none',
+              borderRadius: 14,
+              padding: '12px 16px',
+              background: '#1d4ed8',
+              color: 'white',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            {showIslands ? 'Quay lại TP.HCM' : 'Hiển thị HS-TS'}
+          </button>
+          <select
+            value={provider}
+            onChange={(event) => setProvider(event.target.value as 'fpt' | 'carto')}
+            style={{
+              borderRadius: 14,
+              padding: '12px 14px',
+              border: '1px solid #cbd5e1',
+              background: 'white',
+              color: '#0f172a',
+            }}
+          >
+            <option value="fpt">FPT Map</option>
+            <option value="carto">Carto Voyager</option>
+          </select>
+          <div className="map-legend">
+            <div className="legend-item">
+              <span className="legend-dot" style={{ background: '#ef4444' }} /> Trộm cắp
+            </div>
+            <div className="legend-item">
+              <span className="legend-dot" style={{ background: '#f59e0b' }} /> Cướp giật
+            </div>
+            <div className="legend-item">
+              <span className="legend-dot" style={{ background: '#3b82f6' }} /> Gây rối trật tự
+            </div>
+            <div className="legend-item">
+              <span className="legend-dot" style={{ background: '#10b981' }} /> Ma túy
+            </div>
           </div>
         </div>
       </div>
@@ -85,8 +126,9 @@ const CrimeMap = ({ cases }: { cases: CrimeCase[] }) => {
         style={{ width: '100%', minHeight: '520px', borderRadius: 20, overflow: 'hidden' }}
       >
         <TileLayer
-          attribution='&copy; OpenStreetMap, &copy; CARTO'
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          attribution={tileProviders[provider].attribution}
+          url={tileProviders[provider].url}
+          subdomains={tileProviders[provider].subdomains}
         />
 
         {cases.map((item) => (
