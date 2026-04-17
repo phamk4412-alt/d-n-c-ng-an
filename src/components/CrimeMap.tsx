@@ -51,18 +51,12 @@ const tileProviders = {
     attribution: '&copy; OpenStreetMap, &copy; CARTO',
     subdomains: 'abcd',
   },
-  fpt: {
-    name: 'FPT Map',
-    url: 'https://tiles.fpt.vn/{z}/{x}/{y}.png',
-    attribution: '&copy; FPT Map',
-    subdomains: undefined,
-  },
 };
 
 const vietnamBounds: [[number, number], [number, number]] = [[0.5, 102.0], [24.5, 117.5]];
 
 const CrimeMap = ({ cases }: { cases: CrimeCase[] }) => {
-  const [provider, setProvider] = useState<'osm' | 'carto' | 'fpt'>('osm');
+  const [provider, setProvider] = useState<'osm' | 'carto'>('osm');
   const [showIslands, setShowIslands] = useState(false);
   const center: [number, number] = showIslands ? [12.5, 113.0] : [10.7767, 106.7009];
   const zoom = showIslands ? 5 : 11;
@@ -74,8 +68,6 @@ const CrimeMap = ({ cases }: { cases: CrimeCase[] }) => {
           <h2>Hiển thị dữ liệu trên bản đồ</h2>
           <p style={{ margin: '10px 0 0', color: '#475569', maxWidth: 560 }}>
             Bản đồ giới hạn chỉ trong phạm vi Việt Nam, gồm đất liền và quần đảo Hoàng Sa - Trường Sa theo quan điểm Việt Nam.
-            <br />
-            Nếu FPT Map không hiển thị, chọn Carto Voyager để xem bản đồ ngay.
           </p>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -95,7 +87,7 @@ const CrimeMap = ({ cases }: { cases: CrimeCase[] }) => {
           </button>
           <select
             value={provider}
-            onChange={(event) => setProvider(event.target.value as 'osm' | 'carto' | 'fpt')}
+            onChange={(event) => setProvider(event.target.value as 'osm' | 'carto')}
             style={{
               borderRadius: 14,
               padding: '12px 14px',
@@ -106,7 +98,6 @@ const CrimeMap = ({ cases }: { cases: CrimeCase[] }) => {
           >
             <option value="osm">OpenStreetMap</option>
             <option value="carto">Carto Voyager</option>
-            <option value="fpt">FPT Map</option>
           </select>
           <div className="map-legend">
             <div className="legend-item">
